@@ -1,32 +1,47 @@
-version: '2'
+version: "2"
+volumes:
+  influxdb_data:
+      driver: local
+  chronograf_data:
+      driver: local
+  kapacitor_data:
+      driver: local
 services:
   influxdb:
-    image: xiocode/influxdb
+    image: nexia/influxdb
     ports:
-      - "8083:8083" 
-      - "8086:8086"
-  telegraf:
-    image: xiocode/telegraf
-    network_mode: "host"
+      - "9083:8083"
+      - "9086:8086"
     volumes:
-      - ./telegraf:/etc/telegraf:ro
-    ports:
-      - "8094:8094"
-      - "8092:8092"
-      - "8125:8125"
-    links:
-      - influxdb:influxdb
+      - influxdb_data:/var/lib/influxdb/
+  telegraf:
+    image: nexia/telegraf
     depends_on:
       - influxdb
-  kapacitor:
-    image: xiocode/kapacitor
-    links:
-      - influxdb:influxdb
-    depends_on:
-      - influxdb
+    volumes:
+      - ./telegraf/:/etc/telegraf/
+    command:
+      - "telegraf"
+      - "-config"
+      - "/etc/telegraf/telegraf.conf"
+      - "-config-directory"
+      - "/etc/telegraf/telegraf.d"
   chronograf:
-    image: xiocode/chronograf
-    links:
-      - influxdb:influxdb
+    image: nexia/chronograf
     depends_on:
       - influxdb
+    ports:
+      - "11000:10000"
+    environment:
+      CHRONOGRAF_BIND: 0.0.0.0:10000
+      CHRONOGRAF_LOCAL_DATABASE: /data/chronograf.db
+    volumes:
+      - chronograf_data:/data/
+  kapacitor:
+    image: nexia/kapacitor
+    depends_on:
+      - influxdb
+    ports:
+      - "19092:9092"
+    volumes:
+      - kapacitor_data:/var/lib/kapacitor/
