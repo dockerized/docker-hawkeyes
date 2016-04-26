@@ -1,13 +1,32 @@
-# version: '2'
-# services:
-#   db:
-#     image: postgres
-#   web:
-#     build: .
-#     command: python manage.py runserver 0.0.0.0:8000
-#     volumes:
-#       - .:/code
-#     ports:
-#       - "8000:8000"
-#     depends_on:
-#       - db
+version: '2'
+services:
+  influxdb:
+    image: xiocode/influxdb
+    ports:
+      - "8083:8083" 
+      - "8086:8086"
+  telegraf:
+    image: xiocode/telegraf
+    network_mode: "host"
+    volumes:
+      - ./telegraf:/etc/telegraf:ro
+    ports:
+      - "8094:8094"
+      - "8092:8092"
+      - "8125:8125"
+    links:
+      - influxdb:influxdb
+    depends_on:
+      - influxdb
+  kapacitor:
+    image: xiocode/kapacitor
+    links:
+      - influxdb:influxdb
+    depends_on:
+      - influxdb
+  chronograf:
+    image: xiocode/chronograf
+    links:
+      - influxdb:influxdb
+    depends_on:
+      - influxdb
