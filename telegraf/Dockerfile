@@ -11,6 +11,10 @@ RUN apt-get update \
 # ENV TELEGRAF_VERSION 0.12.1-1
 # RUN apt-get install -y telegraf=$TELEGRAF_VERSION
 
+RUN gpg \
+    --keyserver hkp://ha.pool.sks-keyservers.net \
+    --recv-keys 05CE15085FC09D18E99EFB22684A14CF2582E0C5
+
 ENV TELEGRAF_VERSION 0.12.0
 RUN wget -q https://s3.amazonaws.com/get.influxdb.org/telegraf/telegraf_$TELEGRAF_VERSION-1_amd64.deb.asc && \
     wget -q https://s3.amazonaws.com/get.influxdb.org/telegraf/telegraf_$TELEGRAF_VERSION-1_amd64.deb && \
