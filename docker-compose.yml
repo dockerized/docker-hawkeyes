@@ -9,6 +9,7 @@ volumes:
 services:
   influxdb:
     image: nexia/influxdb
+    network_mode: "host"
     ports:
       - "9083:8083"
       - "9086:8086"
@@ -16,6 +17,7 @@ services:
       - influxdb_data:/var/lib/influxdb/
   telegraf:
     image: nexia/telegraf
+    network_mode: "host"
     depends_on:
       - influxdb
     volumes:
@@ -28,6 +30,7 @@ services:
       - "/etc/telegraf/telegraf.d"
   chronograf:
     image: nexia/chronograf
+    network_mode: "host"
     depends_on:
       - influxdb
     ports:
@@ -39,6 +42,7 @@ services:
       - chronograf_data:/data/
   kapacitor:
     image: nexia/kapacitor
+    network_mode: "host"
     depends_on:
       - influxdb
     ports:
