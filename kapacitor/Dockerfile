@@ -1,20 +1,27 @@
-FROM google/debian:jessie
+FROM nexia/ubuntu
+MAINTAINER jgeiger@gmail.com
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-    ca-certificates apt-transport-https
-
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 684A14CF2582E0C5 && \
-    echo "deb https://repos.influxdata.com/debian jessie stable" > /etc/apt/sources.list.d/influxdata.list && \
-    apt-get update
-
-ENV KAPACITOR_VERSION 0.12.0-1
-RUN apt-get install -y kapacitor=$KAPACITOR_VERSION
+ENV KAPACITOR_VERSION=kapacitor_0.12.0-1
+ENV KAPACITOR_FILE=${KAPACITOR_VERSION}_amd64.deb
 
 EXPOSE 9092
 
-VOLUME /var/lib/kapacitor
+USER root
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["kapacitord"]
+WORKDIR /tmp
+
+RUN wget --quiet https://s3.amazonaws.com/kapacitor/${KAPACITOR_FILE} \
+      && apt-get -qq -y update \
+      && dpkg -i ${KAPACITOR_FILE} \
+      && apt-get autoremove \
+      && apt-get clean \
+      && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+WORKDIR /opt/kapacitor
+
+ENTRYPOINT [ "tini", "--", "/entrypoint.sh"]
+
+CMD [ "kapacitord" ]

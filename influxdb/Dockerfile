@@ -1,22 +1,27 @@
-FROM buildpack-deps:trusty-curl
+FROM nexia/ubuntu
+MAINTAINER jgeiger@gmail.com
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-    ca-certificates apt-transport-https
+ENV INFLUXDB_VERSION=influxdb_0.12.2-1
+ENV INFLUXDB_FILE=${INFLUXDB_VERSION}_amd64.deb
 
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 684A14CF2582E0C5 && \
-    echo "deb https://repos.influxdata.com/debian trusty stable" > /etc/apt/sources.list.d/influxdata.list && \
-    apt-get update
+EXPOSE 8088 8091 8083 8086
 
-ENV INFLUXDB_VERSION 0.12.2-1
-RUN apt-get install -y influxdb=$INFLUXDB_VERSION
-    
-COPY influxdb.conf /etc/influxdb/influxdb.conf
+USER root
 
-EXPOSE 8083 8086
+WORKDIR /tmp
 
-VOLUME /var/lib/influxdb
+RUN wget --quiet https://s3.amazonaws.com/influxdb/${INFLUXDB_FILE} \
+      && apt-get -qq -y update \
+      && dpkg -i ${INFLUXDB_FILE} \
+      && apt-get autoremove \
+      && apt-get clean \
+      && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["influxd"]
+COPY docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+WORKDIR /var/lib/influxdb
+
+ENTRYPOINT [ "tini", "--", "/entrypoint.sh"]
+
+CMD [ "influxd" ]

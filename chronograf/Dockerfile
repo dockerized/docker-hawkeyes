@@ -1,24 +1,29 @@
-FROM google/debian:jessie
+FROM nexia/ubuntu
+MAINTAINER jgeiger@gmail.com
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-    ca-certificates apt-transport-https
-
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 684A14CF2582E0C5 && \
-    echo "deb https://repos.influxdata.com/debian jessie stable" > /etc/apt/sources.list.d/influxdata.list && \
-    apt-get update
-
-ENV CHRONOGRAF_VERSION 0.12.0
-RUN apt-get install -y chronograf=$CHRONOGRAF_VERSION
-
-COPY chronograf.conf /etc/chronograf/chronograf.conf
+ENV CHRONOGRAF_VERSION=chronograf_0.12.0
+ENV CHRONOGRAF_FILE=${CHRONOGRAF_VERSION}_amd64.deb
 
 EXPOSE 10000
 
-ENV PATH /opt/chronograf:$PATH
+USER root
 
-VOLUME /var/lib/chronograf
+WORKDIR /tmp
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["chronograf"]
+RUN wget --quiet --output-document /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.7/gosu-amd64" \
+      && chmod +x /usr/local/bin/gosu \
+      && wget --quiet https://s3.amazonaws.com/get.influxdb.org/chronograf/${CHRONOGRAF_FILE} \
+      && apt-get -qq -y update \
+      && dpkg -i ${CHRONOGRAF_FILE} \
+      && apt-get autoremove \
+      && apt-get clean \
+      && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+WORKDIR /opt/chronograf
+
+ENTRYPOINT [ "tini", "--", "/entrypoint.sh"]
+
+CMD [ "/opt/chronograf/chronograf" ]

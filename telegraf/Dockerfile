@@ -1,20 +1,25 @@
-FROM buildpack-deps:trusty-curl
+FROM nexia/ubuntu
+MAINTAINER jgeiger@gmail.com
 
-RUN gpg \
-    --keyserver hkp://ha.pool.sks-keyservers.net \
-    --recv-keys 05CE15085FC09D18E99EFB22684A14CF2582E0C5
+ENV TELEGRAF_VERSION=telegraf_0.12.1-1
+ENV TELEGRAF_FILE=${TELEGRAF_VERSION}_amd64.deb
 
-# Note the use of `get.influxdb.com/telegraf` which differs from the
-# other TICK product Dockerfiles.
-ENV TELEGRAF_VERSION 0.12.0
-RUN wget -q https://s3.amazonaws.com/get.influxdb.org/telegraf/telegraf_$TELEGRAF_VERSION-1_amd64.deb.asc && \
-    wget -q https://s3.amazonaws.com/get.influxdb.org/telegraf/telegraf_$TELEGRAF_VERSION-1_amd64.deb && \
-    gpg --batch --verify telegraf_$TELEGRAF_VERSION-1_amd64.deb.asc telegraf_$TELEGRAF_VERSION-1_amd64.deb && \
-    dpkg -i telegraf_$TELEGRAF_VERSION-1_amd64.deb && \
-    rm -f telegraf_$TELEGRAF_VERSION-1_amd64.deb*
+USER root
 
-EXPOSE 8125/udp 8092/udp 8094
+WORKDIR /tmp
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["telegraf"]
+RUN wget --quiet http://get.influxdb.org/telegraf/${TELEGRAF_FILE} \
+      && apt-get -qq -y update \
+      && dpkg -i ${TELEGRAF_FILE} \
+      && apt-get autoremove \
+      && apt-get clean \
+      && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+WORKDIR $HOME
+
+ENTRYPOINT [ "tini", "--", "/entrypoint.sh"]
+
+CMD [ "telegraf" ]
