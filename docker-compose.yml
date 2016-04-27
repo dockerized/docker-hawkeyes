@@ -40,6 +40,8 @@ services:
     image: nexia/chronograf
     depends_on:
       - influxdb
+    links:
+      - influxdb
     ports:
       - "11000:10000"
     environment:
