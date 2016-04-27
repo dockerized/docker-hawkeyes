@@ -47,21 +47,26 @@ services:
       CHRONOGRAF_LOCAL_DATABASE: /data/chronograf.db
     volumes:
       - chronograf_data:/data/
+      - ./chronograf/:/etc/chronograf/
+      command:
+      - "chronograf"
+      - "-config"
+      - "/etc/chronograf/chronograf.conf"
     networks:
       - front-tier
       - back-tier
-  kapacitor:
-    image: nexia/kapacitor
-    depends_on:
-      - influxdb
-    ports:
-      - "19092:9092"
-    volumes:
-      - kapacitor_data:/var/lib/kapacitor/
-      - ./kapacitor/:/etc/kapacitor/
-    networks:
-      - front-tier
-      - back-tier
+#   kapacitor:
+#     image: nexia/kapacitor
+#     depends_on:
+#       - influxdb
+#     ports:
+#       - "19092:9092"
+#     volumes:
+#       - kapacitor_data:/var/lib/kapacitor/
+#       - ./kapacitor/:/etc/kapacitor/
+#     networks:
+#       - front-tier
+#       - back-tier
 networks:
   front-tier:
     driver: bridge
