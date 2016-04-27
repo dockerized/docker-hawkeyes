@@ -21,9 +21,9 @@ services:
     depends_on:
       - influxdb
     ports:
-      - "9083:8092"
-      - "9086:8094"
-      - "9086:8125"
+      - "9092:8092"
+      - "9094:8094"
+      - "9125:8125"
     volumes:
       - ./telegraf/:/etc/telegraf/
     links:
