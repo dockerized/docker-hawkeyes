@@ -15,11 +15,13 @@ services:
     volumes:
       - influxdb_data:/var/lib/influxdb/
   telegraf:
-    image: nexia/telegraf
+    image: nexia/telegraf 
     depends_on:
       - influxdb
     volumes:
       - ./telegraf/:/etc/telegraf/
+    links:
+      - influxdb
     command:
       - "telegraf"
       - "-config"
