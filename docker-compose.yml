@@ -58,6 +58,7 @@ services:
       - "19092:9092"
     volumes:
       - kapacitor_data:/var/lib/kapacitor/
+      - ./kapacitor/:/etc/kapacitor/
     networks:
       - front-tier
       - back-tier
