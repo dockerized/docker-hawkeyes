@@ -14,14 +14,16 @@ services:
       - "9086:8086"
     volumes:
       - influxdb_data:/var/lib/influxdb/
+    networks:
+      - back-tier
   telegraf:
     image: nexia/telegraf 
     depends_on:
       - influxdb
     volumes:
       - ./telegraf/:/etc/telegraf/
-    links:
-      - influxdb
+    networks:
+      - back-tier
     command:
       - "telegraf"
       - "-config"
@@ -39,6 +41,9 @@ services:
       CHRONOGRAF_LOCAL_DATABASE: /data/chronograf.db
     volumes:
       - chronograf_data:/data/
+    networks:
+      - front-tier
+      - back-tier
   kapacitor:
     image: nexia/kapacitor
     depends_on:
@@ -47,3 +52,11 @@ services:
       - "19092:9092"
     volumes:
       - kapacitor_data:/var/lib/kapacitor/
+    networks:
+      - front-tier
+      - back-tier
+networks:
+  front-tier:
+    driver: bridge
+  back-tier:
+    driver: bridge
