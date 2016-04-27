@@ -22,6 +22,8 @@ services:
       - influxdb
     volumes:
       - ./telegraf/:/etc/telegraf/
+    links:
+      - influxdb
     networks:
       - back-tier
     command:
