@@ -10,8 +10,8 @@ services:
   influxdb:
     image: nexia/influxdb
     ports:
-      - "9083:8083"
-      - "9086:8086"
+      - "18083:8083"
+      - "18086:8086"
     volumes:
       - influxdb_data:/var/lib/influxdb/
     networks:
@@ -21,13 +21,11 @@ services:
     depends_on:
       - influxdb
     ports:
-      - "9092:8092"
-      - "9094:8094"
-      - "9125:8125"
+      - "18092:8092"
+      - "18094:8094"
+      - "18125:8125"
     volumes:
       - ./telegraf/:/etc/telegraf/
-    links:
-      - influxdb
     networks:
       - back-tier
     command:
@@ -40,10 +38,8 @@ services:
     image: nexia/chronograf
     depends_on:
       - influxdb
-    links:
-      - influxdb
     ports:
-      - "11000:10000"
+      - "18000:10000"
     environment:
       CHRONOGRAF_BIND: 0.0.0.0:10000
       CHRONOGRAF_LOCAL_DATABASE: /data/chronograf.db
