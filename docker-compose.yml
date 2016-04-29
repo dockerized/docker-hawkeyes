@@ -8,7 +8,7 @@ volumes:
       driver: local
 services:
   influxdb:
-    image: nexia/influxdb
+    image: xiocode/influxdb
     ports:
       - "18083:8083"
       - "18086:8086"
@@ -17,7 +17,7 @@ services:
     networks:
       - back-tier
   telegraf:
-    image: nexia/telegraf 
+    image: xiocode/telegraf 
     depends_on:
       - influxdb
     ports:
@@ -35,7 +35,7 @@ services:
       - "-config-directory"
       - "/etc/telegraf/telegraf.d"
   chronograf:
-    image: nexia/chronograf
+    image: xiocode/chronograf
     depends_on:
       - influxdb
     ports:

@@ -1,5 +1,5 @@
-FROM nexia/ubuntu
-MAINTAINER jgeiger@gmail.com
+FROM buildpack-deps:trusty-curl
+MAINTAINER Tony.Shao
 
 ENV TELEGRAF_VERSION=telegraf_0.12.1-1
 ENV TELEGRAF_FILE=${TELEGRAF_VERSION}_amd64.deb

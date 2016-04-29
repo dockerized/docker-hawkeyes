@@ -1,5 +1,5 @@
-FROM nexia/ubuntu
-MAINTAINER jgeiger@gmail.com
+FROM buildpack-deps:trusty-curl
+MAINTAINER Tony.Shao
 
 ENV KAPACITOR_VERSION=kapacitor_0.12.0-1
 ENV KAPACITOR_FILE=${KAPACITOR_VERSION}_amd64.deb

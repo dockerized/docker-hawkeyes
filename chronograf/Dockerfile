@@ -1,5 +1,5 @@
-FROM nexia/ubuntu
-MAINTAINER jgeiger@gmail.com
+FROM buildpack-deps:trusty-curl
+MAINTAINER Tony.Shao
 
 ENV CHRONOGRAF_VERSION=chronograf_0.12.0
 ENV CHRONOGRAF_FILE=${CHRONOGRAF_VERSION}_amd64.deb

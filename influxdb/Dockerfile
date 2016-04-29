@@ -1,5 +1,5 @@
-FROM nexia/ubuntu
-MAINTAINER jgeiger@gmail.com
+FROM buildpack-deps:trusty-curl
+MAINTAINER Tony.Shao
 
 ENV INFLUXDB_VERSION=influxdb_0.12.2-1
 ENV INFLUXDB_FILE=${INFLUXDB_VERSION}_amd64.deb
