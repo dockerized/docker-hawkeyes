@@ -16,6 +16,10 @@ RUN set -x \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true
 
+ENV TINI_VERSION v0.9.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/local/bin/tini
+RUN chmod +x /usr/local/bin/tini
+
 EXPOSE 8088 8091 8083 8086
 
 USER root
