@@ -1,14 +1,14 @@
 FROM buildpack-deps:trusty-curl
 MAINTAINER Tony.Shao
 
-ENV TELEGRAF_VERSION=telegraf_0.12.1-1
+ENV TELEGRAF_VERSION=telegraf_0.13.0
 ENV TELEGRAF_FILE=${TELEGRAF_VERSION}_amd64.deb
 
 USER root
 
 WORKDIR /tmp
 
-RUN wget --quiet http://get.influxdb.org/telegraf/${TELEGRAF_FILE} \
+RUN wget --quiet https://dl.influxdata.com/telegraf/releases/${TELEGRAF_FILE} \
       && apt-get -qq -y update \
       && dpkg -i ${TELEGRAF_FILE} \
       && apt-get autoremove \

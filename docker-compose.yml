@@ -17,7 +17,7 @@ services:
     networks:
       - back-tier
   telegraf:
-    image: xiocode/telegraf 
+    image: xiocode/telegraf
     depends_on:
       - influxdb
     ports:
@@ -34,6 +34,19 @@ services:
       - "/etc/telegraf/telegraf.conf"
       - "-config-directory"
       - "/etc/telegraf/telegraf.d"
+  kapacitor:
+    image: nexia/kapacitor
+    depends_on:
+      - influxdb
+    ports:
+      - "19092:9092"
+    volumes:
+      - kapacitor_data:/var/lib/kapacitor/
+      - ./kapacitor/:/etc/kapacitor/
+    command:
+      - "kapacitord"
+      - "-config"
+      - "/etc/kapacitor/kapacitor.conf"
   chronograf:
     image: xiocode/chronograf
     depends_on:
