@@ -47,6 +47,9 @@ services:
       - "kapacitord"
       - "-config"
       - "/etc/kapacitor/kapacitor.conf"
+    networks:
+      - front-tier
+      - back-tier
   chronograf:
     image: xiocode/chronograf
     depends_on:
