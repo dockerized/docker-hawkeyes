@@ -18,6 +18,6 @@ ENV PATH /opt/chronograf:$PATH
 
 VOLUME /var/lib/chronograf
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["chronograf"]

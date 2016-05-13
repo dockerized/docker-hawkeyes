@@ -13,6 +13,6 @@ RUN wget -q https://dl.influxdata.com/telegraf/releases/telegraf_${TELEGRAF_VERS
 
 EXPOSE 8125/udp 8092/udp 8094
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["telegraf"]

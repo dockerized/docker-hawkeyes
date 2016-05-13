@@ -15,6 +15,6 @@ EXPOSE 9092
 
 VOLUME /var/lib/kapacitor
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["kapacitord"]
