@@ -1,9 +1,11 @@
 #!/bin/bash
 set -e
 
-if [ "$1" = "kapacitord" ]; then
-  chown -R kapacitor:kapacitor /var/lib/kapacitor
-  exec gosu kapacitor "$@"
+if [ "${1:0:1}" = '-' ]; then
+    set -- kapacitord "$@"
 fi
+
+KAPACITOR_HOSTNAME=${KAPACITOR_HOSTNAME:-$HOSTNAME}
+export KAPACITOR_HOSTNAME
 
 exec "$@"

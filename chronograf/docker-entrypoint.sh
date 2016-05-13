@@ -1,9 +1,8 @@
 #!/bin/bash
 set -e
 
-if [ "$1" = "/opt/chronograf/chronograf" ]; then
-  chown -R chronograf:chronograf /data
-  exec gosu chronograf "$@"
+if [ "${1:0:1}" = '-' ]; then
+    set -- chronograf "$@"
 fi
 
 exec "$@"
