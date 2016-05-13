@@ -35,7 +35,7 @@ services:
       - "-config-directory"
       - "/etc/telegraf/telegraf.d"
   kapacitor:
-    image: nexia/kapacitor
+    image: xiocode/kapacitor
     depends_on:
       - influxdb
     ports:
