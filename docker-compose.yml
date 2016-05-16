@@ -6,6 +6,8 @@ volumes:
       driver: local
   kapacitor_data:
       driver: local
+  grafana_data:
+      driver: local
 services:
   influxdb:
     image: xiocode/influxdb
@@ -48,7 +50,6 @@ services:
       - "-config"
       - "/etc/kapacitor/kapacitor.conf"
     networks:
-      - front-tier
       - back-tier
   chronograf:
     image: xiocode/chronograf
@@ -62,6 +63,17 @@ services:
     volumes:
       - chronograf_data:/data/
       - ./chronograf/:/etc/chronograf/
+    networks:
+      - front-tier
+      - back-tier
+  grafana:
+    image: grafana/grafana
+    depends_on:
+      - influxdb
+    ports:
+      - "13000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
     networks:
       - front-tier
       - back-tier
