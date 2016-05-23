@@ -11,6 +11,9 @@ RUN wget -q https://dl.influxdata.com/kapacitor/releases/kapacitor_${KAPACITOR_V
     dpkg -i kapacitor_${KAPACITOR_VERSION}_amd64.deb && \
     rm -f kapacitor_${KAPACITOR_VERSION}_amd64.deb*
 
+COPY kapacitor /usr/bin/
+COPY kapacitord /usr/bin/
+
 EXPOSE 9092
 
 VOLUME /var/lib/kapacitor
