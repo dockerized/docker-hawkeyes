@@ -13,6 +13,8 @@ RUN wget -q https://dl.influxdata.com/kapacitor/releases/kapacitor_${KAPACITOR_V
 
 COPY kapacitor /usr/bin/
 COPY kapacitord /usr/bin/
+RUN chmod +x /usr/bin/kapacitor
+RUN chmod +x /usr/bin/kapacitord
 
 EXPOSE 9092
 
